@@ -23,7 +23,6 @@ CREATE TABLE user_role (
 );
 
 CREATE TABLE card (
-    f
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     card_number VARCHAR(16) NOT NULL UNIQUE,
     user_id UUID NOT NULL,
