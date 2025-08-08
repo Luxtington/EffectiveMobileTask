@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Ilia Ivanov
+      changes:
+        - modifyDataType:
+            tableName: user
+            columnName: password
+            newDataType: TEXT

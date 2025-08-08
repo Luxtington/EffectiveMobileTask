@@ -1,30 +1,20 @@
-package ru.ivanov.Bank.entity;
+package ru.ivanov.Bank.dto;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
+import ru.ivanov.Bank.entity.Role;
+import ru.ivanov.Bank.entity.RoleType;
 import ru.ivanov.Bank.validation.ValidBirthdayYear;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
-@Entity
-@ToString(exclude = "createdAt")
-@Setter
-@Getter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "\"user\"")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+public class RegisterRequest {
     @NotEmpty(message = "Фамилия не может быть пустой")
     @NotNull
     @Size(min = 1, max = 30, message = "Размер фамилии должен быть в диапазоне от 1 от до 30 символов")
@@ -49,41 +39,5 @@ public class User {
     @NotEmpty(message = "Пароль не может быть пустым")
     @NotNull
     @Size(min = 1, max = 100, message = "Размер пароля должен быть в диапазоне от 1 от до 30 символов")
-    @Column(columnDefinition = "TEXT")
     private String password;
-
-    @CreationTimestamp()
-    @Column(updatable = false, nullable = false)
-    private LocalDateTime createdAt;
-
-    @NotNull
-    @ManyToMany
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns =  @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
-
-    @NotNull
-    @OneToMany(mappedBy = "owner")
-    private List<Card> cards = new ArrayList<>();
-
-    public User(String surname, String name, String patronymic, int birthdayYear, String username, String password) {
-        this.surname = surname;
-        this.name = name;
-        this.patronymic = patronymic;
-        this.birthdayYear = birthdayYear;
-        this.username = username;
-        this.password = password;
-    }
-
-    public void addRole(@NotNull Role role){
-        roles.add(role);
-    }
-
-    public void addCard(@NotNull Card card){
-        cards.add(card);
-        card.setOwner(this);
-    }
-}
+} 

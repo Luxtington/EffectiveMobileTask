@@ -7,7 +7,7 @@ CREATE TABLE "user" (
     patronymic VARCHAR(20),
     birthday_year INT CHECK (birthday_year BETWEEN 1910 AND 2025),
     username VARCHAR(15) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    password  TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
