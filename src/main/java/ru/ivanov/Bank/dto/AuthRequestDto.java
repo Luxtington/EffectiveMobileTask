@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRequest {
+public class AuthRequestDto {
     @NotBlank(message = "Логин указывать обязательно")
     private String username;
 

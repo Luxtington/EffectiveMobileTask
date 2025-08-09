@@ -7,9 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.ivanov.Bank.dto.AuthRequest;
-import ru.ivanov.Bank.dto.AuthResponse;
-import ru.ivanov.Bank.dto.RegisterRequest;
+import ru.ivanov.Bank.dto.AuthRequestDto;
+import ru.ivanov.Bank.dto.AuthResponseDto;
+import ru.ivanov.Bank.dto.CreateUserRequestDto;
 import ru.ivanov.Bank.entity.RoleType;
 import ru.ivanov.Bank.entity.User;
 import ru.ivanov.Bank.exception.RoleNotFoundException;
@@ -29,7 +29,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthResponse login(AuthRequest request) {
+    public AuthResponseDto login(AuthRequestDto request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
@@ -41,7 +41,7 @@ public class AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с таким логином не найден"));
         
-        AuthResponse response = new AuthResponse();
+        AuthResponseDto response = new AuthResponseDto();
         response.setToken(jwt);
         response.setUsername(user.getUsername());
         response.setRoles(user.getRoles());
@@ -49,7 +49,7 @@ public class AuthService {
         return response;
     }
 
-    public AuthResponse register(RegisterRequest request) throws Throwable {
+    public AuthResponseDto register(CreateUserRequestDto request) throws Throwable {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Пользователь с таким логином уже зарегистрирован");
         }
@@ -73,7 +73,7 @@ public class AuthService {
 
         String jwt = jwtTokenProvider.generateToken(authentication);
 
-        AuthResponse response = new AuthResponse();
+        AuthResponseDto response = new AuthResponseDto();
         response.setToken(jwt);
         response.setUsername(savedUser.getUsername());
         response.setRoles(savedUser.getRoles());

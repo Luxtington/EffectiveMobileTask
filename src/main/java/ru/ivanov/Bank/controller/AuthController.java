@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ivanov.Bank.dto.AuthRequest;
-import ru.ivanov.Bank.dto.AuthResponse;
-import ru.ivanov.Bank.dto.RegisterRequest;
+import ru.ivanov.Bank.dto.AuthRequestDto;
+import ru.ivanov.Bank.dto.AuthResponseDto;
+import ru.ivanov.Bank.dto.CreateUserRequestDto;
 import ru.ivanov.Bank.service.AuthService;
 
 import java.util.HashSet;
@@ -20,24 +20,24 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
         try {
-            AuthResponse response = authService.login(request);
+            AuthResponseDto response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse(null, null, new HashSet<>()));
+                    .body(new AuthResponseDto(null, null, new HashSet<>()));
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerWithDetails(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponseDto> registerWithDetails(@Valid @RequestBody CreateUserRequestDto request) {
         try {
-            AuthResponse response = authService.register(request);
+            AuthResponseDto response = authService.register(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Throwable e) {
             return ResponseEntity.badRequest()
-                    .body(new AuthResponse(null, null,  new HashSet<>()));
+                    .body(new AuthResponseDto(null, null,  new HashSet<>()));
         }
     }
 
