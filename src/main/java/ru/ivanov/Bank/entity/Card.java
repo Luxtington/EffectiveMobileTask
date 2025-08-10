@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.ivanov.Bank.listener.CardEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@EntityListeners(CardEntityListener.class)
 @ToString
 @Setter
 @Getter
@@ -69,5 +71,9 @@ public class Card {
 
     public void addTransactionAsIncoming(@NotNull Transaction transaction){
         incomingTransactions.add(transaction);
+    }
+
+    public Boolean isActive(){
+        return status.equals(CardStatus.ACTIVE) && expiryDate.isAfter(LocalDate.now());
     }
 }

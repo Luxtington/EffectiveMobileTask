@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.ivanov.Bank.validation.ValidBirthdayYear;
 
@@ -16,6 +13,7 @@ import java.util.*;
 
 @Entity
 @ToString(exclude = "createdAt")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Setter
 @Getter
 @NoArgsConstructor
@@ -23,6 +21,7 @@ import java.util.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID id;
 
     @NotEmpty(message = "Фамилия не может быть пустой")

@@ -37,16 +37,15 @@ public class Transaction {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private TransactionStatus status;
+    private TransactionStatus status = TransactionStatus.PENDING;
 
     @CreationTimestamp()
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public Transaction(Card fromCard, Card toCard, BigDecimal amount, TransactionStatus status) {
+    public Transaction(Card fromCard, Card toCard, BigDecimal amount) {
         this.fromCard = fromCard;
         this.toCard = toCard;
         this.amount = amount;
-        this.status = status;
     }
 }

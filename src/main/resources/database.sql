@@ -24,7 +24,7 @@ CREATE TABLE user_role (
 
 CREATE TABLE card (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    card_number VARCHAR(16) NOT NULL UNIQUE,
+    card_number VARCHAR(19) NOT NULL UNIQUE,
     user_id UUID NOT NULL,
     expiry_date DATE NOT NULL DEFAULT CURRENT_DATE,
     status VARCHAR(50) NOT NULL,
