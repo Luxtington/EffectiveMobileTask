@@ -6,6 +6,11 @@ import ru.ivanov.Bank.entity.CardStatus;
 
 import java.time.LocalDate;
 
+/*TODO:
+в дальнейшем можно этот класс убрать,
+заменив, например, на Scheduled Task, чтобы статус обновлялся в фоновой задаче
+ */
+
 public class CardEntityListener {
     @PostLoad
     public void updateCardStatus(Card card) {
