@@ -1,6 +1,9 @@
 package ru.ivanov.Bank.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ivanov.Bank.dto.TransferRequestDto;
@@ -23,18 +26,33 @@ public class TransactionService {
     private final CardRepository cardRepository;
     private final TransactionRepository transactionRepository;
 
-    public List<Transaction> findAll(){
-        return transactionRepository.findAll();
+    public Page<Transaction> findAll(int pageNumber, int size){
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        return transactionRepository.findAll(pageable);
     }
 
     public Transaction findById(UUID id) throws TransactionNotFoundException{
         return transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException("Транзакция с id = " + id + " не найдена"));
     }
 
+    public Page<Transaction> findAllByUserId(UUID userId, int pageNumber, int size){
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        return transactionRepository.findAllByUserId(userId, pageable);
+    }
+
+    public Page<Transaction> findAllByCardId(UUID cardId, int pageNumber, int size){
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        return transactionRepository.findAllByCardId(cardId, pageable);
+    }
+
     @Transactional
-    public Transaction transferMoneyBetweenCards(TransferRequestDto requestDto) throws CardNotFoundException {
+    public Transaction transferMoneyBetweenCards(TransferRequestDto requestDto, String transferAuthorUsername) throws CardNotFoundException {
         Card fromCard = cardRepository.findById(requestDto.getFromCardId()).orElseThrow(() -> new CardNotFoundException("Карта с id = " + requestDto.getFromCardId() + " не найдена"));
         Card toCard = cardRepository.findById(requestDto.getToCardId()).orElseThrow(() -> new CardNotFoundException("Карта с id = " + requestDto.getToCardId() + " не найдена"));
+
+        if (!fromCard.getOwner().getUsername().equals(transferAuthorUsername)){
+            throw new TransactionTransferException("Только владелец карт может делать финансовые операции с ними");
+        }
 
         if (!fromCard.getOwner().equals(toCard.getOwner())) {
             throw new TransactionTransferException("Перевод денежных средств может быть осуществлен только между картами одного пользователя");

@@ -1,5 +1,6 @@
 package ru.ivanov.Bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -23,10 +24,12 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "from_card_id", referencedColumnName = "id", nullable = false)
     private Card fromCard;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "to_card_id", referencedColumnName = "id", nullable = false)
     private Card toCard;
@@ -47,5 +50,15 @@ public class Transaction {
         this.fromCard = fromCard;
         this.toCard = toCard;
         this.amount = amount;
+    }
+
+    @Transient
+    public UUID getFromCardId() {
+        return fromCard != null ? fromCard.getId() : null;
+    }
+
+    @Transient
+    public UUID getToCardId() {
+        return toCard != null ? toCard.getId() : null;
     }
 }

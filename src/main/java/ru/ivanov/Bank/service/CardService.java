@@ -1,6 +1,9 @@
 package ru.ivanov.Bank.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ivanov.Bank.dto.CardResponseDto;
@@ -8,6 +11,7 @@ import ru.ivanov.Bank.dto.CreateCardRequestDto;
 import ru.ivanov.Bank.dto.TopUpRequestDto;
 import ru.ivanov.Bank.entity.Card;
 import ru.ivanov.Bank.entity.CardStatus;
+import ru.ivanov.Bank.entity.User;
 import ru.ivanov.Bank.exception.CardNotFoundException;
 import ru.ivanov.Bank.exception.UserNotFoundException;
 import ru.ivanov.Bank.mapper.CardMapper;
@@ -16,7 +20,6 @@ import ru.ivanov.Bank.repository.UserRepository;
 import ru.ivanov.Bank.util.CardNumberGenerator;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,12 +30,22 @@ public class CardService {
     private final CardMapper cardMapper;
     private final CardNumberGenerator cardNumberGenerator;
 
-    public List<Card> findAll(){
-        return cardRepository.findAll();
+    public Page<CardResponseDto> findAll(int pageNumber, int size){
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        Page<Card> cardPage = cardRepository.findAll(pageable);
+        return cardPage.map(cardMapper::toDtoFromCard);
     }
 
-    public Card findById(UUID id) throws CardNotFoundException {
-        return cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException("Карта с id = " + id + " не найдена"));
+    public CardResponseDto findById(UUID id) throws CardNotFoundException {
+        Card card = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException("Карта с id = " + id + " не найдена"));
+        return cardMapper.toDtoFromCard(card);
+    }
+
+    public Page<CardResponseDto> findByOwnerId(UUID ownerId, int pageNumber, int size){
+        User owner = userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException("Пользователь с id = " + ownerId + " не найден"));
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        Page<Card> cards = cardRepository.findByOwner(owner, pageable);
+        return cards.map(cardMapper::toDtoFromCard);
     }
 
     @Transactional

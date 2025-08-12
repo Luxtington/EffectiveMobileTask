@@ -40,7 +40,7 @@ public class DataInitializer {
         }
         if (userRepository.findAllByRoleType(RoleType.ADMIN.toString()).isEmpty()){
             User admin1 = new User("admin1", "admin1", "admin1", 1999, "admin1", passwordEncoder.encode("admin1"));
-            admin1.setRoles(Set.of(roleAdmin, roleUser));
+            admin1.setRoles(Set.of(roleAdmin));
             userRepository.save(admin1);
             log.info("First admin was saved in db");
         }

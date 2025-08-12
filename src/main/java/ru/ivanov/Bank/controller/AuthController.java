@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> registerWithDetails(@Valid @RequestBody CreateUserRequestDto request) {
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody CreateUserRequestDto request) {
         try {
             AuthResponseDto response = authService.register(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);

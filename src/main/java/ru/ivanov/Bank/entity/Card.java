@@ -1,5 +1,6 @@
 package ru.ivanov.Bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -43,10 +44,12 @@ public class Card {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User owner;
 
+    @JsonIgnore
     @NotNull
     @OneToMany(mappedBy = "fromCard")
     private List<Transaction> outgoingTransactions = new ArrayList<>();
 
+    @JsonIgnore
     @NotNull
     @OneToMany(mappedBy = "toCard")
     private List<Transaction> incomingTransactions = new ArrayList<>();

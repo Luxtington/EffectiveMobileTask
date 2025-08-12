@@ -3,6 +3,7 @@ package ru.ivanov.Bank.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -32,8 +33,24 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/**").permitAll() // чисто для запуска веба
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/users").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/cards").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/cards/").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.POST,"/api/cards").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/cards/block/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/cards/*").hasAuthority("ROLE_USER")
+                .requestMatchers("/api/cards/*/top-up").hasAuthority("ROLE_USER")
+
+                .requestMatchers(HttpMethod.GET,"/api/transactions").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.GET,"/api/transactions").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                .requestMatchers(HttpMethod.DELETE,"/api/transactions/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/transactions/transfer").hasAuthority("ROLE_USER")
+                .requestMatchers("/api/transactions/card").hasAuthority("ROLE_USER")
+                .requestMatchers("/api/transactions/user").hasAuthority("ROLE_USER")
+
                 .requestMatchers("/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

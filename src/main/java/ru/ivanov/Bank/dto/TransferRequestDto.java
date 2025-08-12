@@ -21,7 +21,7 @@ public class TransferRequestDto {
     @DecimalMin(value = "0.01", message = "Сумма перевода должна быть больше 0")
     private BigDecimal amount;
 
-    @AssertTrue
+    @AssertTrue(message = "Нельзя сделать перевод на карту с нее же самой")
     public boolean isDifferentCardsNumbers(){
         return !fromCardId.equals(toCardId);
     }

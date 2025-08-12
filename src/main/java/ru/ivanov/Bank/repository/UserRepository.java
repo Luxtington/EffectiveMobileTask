@@ -1,5 +1,8 @@
 package ru.ivanov.Bank.repository;
 
+import jakarta.annotation.Nullable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +16,7 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+    Page<User> findAll(@Nullable Pageable pageable);
     Optional<User> findByUsername(String username);
 
     @Query(value = "SELECT * FROM \"user\" u WHERE u.id IN (SELECT user_id from user_role JOIN role ON user_role.role_id = role.id WHERE role.name = :roleName)",

@@ -1,5 +1,6 @@
 package ru.ivanov.Bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@ToString(exclude = "createdAt")
+@ToString()
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Setter
 @Getter
@@ -64,6 +65,7 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
     @NotNull
     @OneToMany(mappedBy = "owner")
     private List<Card> cards = new ArrayList<>();

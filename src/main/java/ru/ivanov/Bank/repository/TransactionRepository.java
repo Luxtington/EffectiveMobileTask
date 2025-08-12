@@ -1,5 +1,6 @@
 package ru.ivanov.Bank.repository;
 
+import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
+    Page<Transaction> findAll(@Nullable Pageable pageable);
     @Query("SELECT t FROM Transaction t WHERE t.fromCard.owner.id = :userId")
     Page<Transaction> findAllByUserId(@Param("userId") UUID id, Pageable pageable);
     @Query("SELECT t from Transaction t WHERE t.fromCard.id = :cardId")
