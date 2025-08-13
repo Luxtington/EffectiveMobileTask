@@ -1,0 +1,212 @@
+openapi: 3.0.3
+info:
+  title: 🏦 Банковское API
+  version: 1.0.0
+  description: |
+    **Веб-приложение для управления банковскими картами и транзакциями**
+    
+    ### �� Аутентификация
+    Для доступа к защищенным эндпоинтам используйте JWT токен
+    
+    ### 👨‍�� Роли пользователей
+    - **ROLE_ADMIN** - полный доступ к системе
+    - **ROLE_USER** - доступ к своим картам и транзакциям
+
+servers:
+  - url: http://localhost:8080
+    description: Локальная среда разработки
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Аутентификация
+      summary: Авторизация пользователя
+      description: Выполняет вход в систему и возвращает JWT токен
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin1"
+                password:
+                  type: string
+                  example: "admin123"
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  username:
+                    type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Неверные учетные данные
+
+  /api/auth/register:
+    post:
+      tags:
+        - Аутентификация
+      summary: Регистрация пользователя
+      description: Создает нового пользователя в системе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "newuser"
+                password:
+                  type: string
+                  example: "password123"
+                name:
+                  type: string
+                  example: "Иван"
+                surname:
+                  type: string
+                  example: "Иванов"
+                patronymic:
+                  type: string
+                  example: "Иванович"
+                birthdayYear:
+                  type: integer
+                  example: 1990
+      responses:
+        '201':
+          description: Пользователь успешно создан
+        '400':
+          description: Некорректные данные
+
+  /api/users:
+    get:
+      tags:
+        - Пользователи
+      summary: Получить всех пользователей
+      description: Возвращает постраничный список всех пользователей (только для администраторов)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Список пользователей получен
+        '403':
+          description: Доступ запрещен
+
+  /api/cards:
+    get:
+      tags:
+        - Банковские карты
+      summary: Получить все карты
+      description: Возвращает постраничный список всех карт (только для администраторов)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Список карт получен
+        '403':
+          description: Доступ запрещен
+
+    post:
+      tags:
+        - Банковские карты
+      summary: Создать карту
+      description: Создает новую банковскую карту для пользователя (только для администраторов)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ownerId:
+                  type: string
+                  format: uuid
+                  example: "87be893f-80ac-474a-a574-59eb98644541"
+      responses:
+        '201':
+          description: Карта успешно создана
+        '403':
+          description: Доступ запрещен
+
+  /api/transactions/transfer:
+    post:
+      tags:
+        - Транзакции
+      summary: Выполнить перевод
+      description: Выполняет перевод денежных средств между картами одного пользователя
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fromCardId:
+                  type: string
+                  format: uuid
+                  example: "b52a3074-9c11-40a2-abdc-3c0b2bb5fad5"
+                toCardId:
+                  type: string
+                  format: uuid
+                  example: "c63b4185-91d2-51b3-bced-4d1c3cc6e0f6"
+                amount:
+                  type: number
+                  format: decimal
+                  example: 100.50
+      responses:
+        '201':
+          description: Перевод успешно выполнен
+        '400':
+          description: Ошибка перевода
+        '403':
+          description: Доступ запрещен
