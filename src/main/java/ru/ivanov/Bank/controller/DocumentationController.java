@@ -5,10 +5,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер для предоставления документации API.
+ * Предоставляет HTML страницу с описанием всех доступных endpoints
+ * банковского API, включая примеры запросов и ответов.
+ * 
+ * @author Ilia Ivanov
+ * @version 1.0
+ * @since 2025
+ */
 @RestController
 @RequestMapping("/api/docs")
 public class DocumentationController {
 
+    /**
+     * Возвращает HTML документацию API.
+     * 
+     * <p>Предоставляет полное описание всех доступных endpoints:
+     * <ul>
+     *   <li>Аутентификация (логин, регистрация)</li>
+     *   <li>Управление пользователями (CRUD операции)</li>
+     *   <li>Управление картами (создание, блокировка, пополнение)</li>
+     *   <li>Транзакции (переводы между картами)</li>
+     * </ul></p>
+     * 
+     * @return HTML страница с документацией API
+     */
     @GetMapping
     public ResponseEntity<String> getApiDocs() {
         return ResponseEntity.ok("""
@@ -27,9 +49,9 @@ public class DocumentationController {
                 </style>
             </head>
             <body>
-                <h1>�� Банковское API</h1>
+                <h1>🏦 Банковское API</h1>
                 
-                <h2>�� Аутентификация</h2>
+                <h2>🔐 Аутентификация</h2>
                 
                 <div class="endpoint">
                     <h3>POST /api/auth/login</h3>

@@ -17,7 +17,7 @@ public interface CardMapper {
     CardResponseDto toDtoFromCard(Card card);
 
 //    @AfterMapping
-//    default void maskCardNumber(@MappingTarget CardResponseDto dto, Card card) {
+//    default void fillResponseDto(@MappingTarget CardResponseDto dto, Card card) {
 //        if (card.getCardNumber() != null) {
 //            dto.setCardNumber(maskCardNumber(card.getCardNumber()));
 //        }

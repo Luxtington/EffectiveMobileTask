@@ -12,6 +12,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Утилитный класс для генерации номера карты.
+ * Предоставляет метод для создания уникального номера карты,
+ * проверяет существующие номера и генерирует заново при совпадении.
+ *
+ * @author Ilia Ivanov
+ * @version 1.0
+ * @since 2025
+ */
 @Component
 @RequiredArgsConstructor
 public class CardNumberGenerator {

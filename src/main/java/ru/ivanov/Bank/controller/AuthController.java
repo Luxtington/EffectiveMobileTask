@@ -12,6 +12,15 @@ import ru.ivanov.Bank.service.AuthService;
 
 import java.util.HashSet;
 
+/**
+ * Контроллер для аутентификации и регистрации пользователей.
+ * Предоставляет REST API endpoints для входа в систему, регистрации
+ * новых пользователей и изменения паролей.
+ * 
+ * @author Ilia Ivanov
+ * @version 1.0
+ * @since 2025
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -19,6 +28,12 @@ public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * Выполняет аутентификацию пользователя.
+     * 
+     * @param request данные для аутентификации (логин и пароль)
+     * @return ответ с JWT токеном и информацией о пользователе или ошибка аутентификации
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
         try {
@@ -30,6 +45,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Регистрирует нового пользователя в системе.
+     * 
+     * @param request данные для регистрации пользователя
+     * @return ответ с JWT токеном и информацией о зарегистрированном пользователе или ошибка регистрации
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody CreateUserRequestDto request) {
         try {
@@ -41,6 +62,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * Изменяет пароль пользователя.
+     * 
+     * @param username логин пользователя
+     * @param newPassword новый пароль
+     * @return сообщение об успешном изменении пароля или ошибка
+     */
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(
             @RequestParam String username,

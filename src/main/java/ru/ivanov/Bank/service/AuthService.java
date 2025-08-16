@@ -20,6 +20,15 @@ import ru.ivanov.Bank.security.JwtTokenProvider;
 
 import java.util.function.Supplier;
 
+/**
+ * Сервис для аутентификации и регистрации пользователей.
+ * Предоставляет методы для входа в систему, регистрации новых пользователей,
+ * проверки существования пользователей и изменения паролей.
+ * 
+ * @author Ilia Ivanov
+ * @version 1.0
+ * @since 2025
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -29,6 +38,13 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Выполняет аутентификацию пользователя и возвращает JWT токен.
+     * 
+     * @param request данные для аутентификации (логин и пароль)
+     * @return ответ с JWT токеном и информацией о пользователе
+     * @throws UserNotFoundException если пользователь не найден
+     */
     public AuthResponseDto login(AuthRequestDto request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -49,6 +65,14 @@ public class AuthService {
         return response;
     }
 
+    /**
+     * Регистрирует нового пользователя в системе.
+     * 
+     * @param request данные для регистрации пользователя
+     * @return ответ с JWT токеном и информацией о зарегистрированном пользователе
+     * @throws RuntimeException если пользователь с таким логином уже существует
+     * @throws RoleNotFoundException если роль пользователя не найдена в БД
+     */
     public AuthResponseDto register(CreateUserRequestDto request) throws Throwable {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Пользователь с таким логином уже зарегистрирован");
@@ -81,10 +105,23 @@ public class AuthService {
         return response;
     }
 
+    /**
+     * Проверяет существование пользователя по логину.
+     * 
+     * @param username логин пользователя для проверки
+     * @return true если пользователь существует, false в противном случае
+     */
     public boolean userExists(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
 
+    /**
+     * Изменяет пароль пользователя.
+     * 
+     * @param username логин пользователя
+     * @param newPassword новый пароль (будет зашифрован)
+     * @throws UserNotFoundException если пользователь не найден
+     */
     public void changePassword(String username, String newPassword) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с таким логином не существует"));

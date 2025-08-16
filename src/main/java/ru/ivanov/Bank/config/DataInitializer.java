@@ -13,6 +13,15 @@ import ru.ivanov.Bank.repository.UserRepository;
 
 import java.util.Set;
 
+/**
+ * Компонент для инициализации начальных данных в базе данных.
+ * Автоматически создает роли (ADMIN, USER) и первого администратора
+ * при запуске приложения, если они отсутствуют в базе данных.
+ * 
+ * @author Ilia Ivanov
+ * @version 1.0
+ * @since 2025
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,6 +31,11 @@ public class DataInitializer {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Заполняет базу данных начальными данными.
+     * Выполняется автоматически после создания всех бинов Spring.
+     * Создает роли ADMIN и USER, а также первого администратора системы.
+     */
     @PostConstruct
     public void fillDb(){
 
