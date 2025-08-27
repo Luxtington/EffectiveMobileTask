@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 import ru.ivanov.Bank.listener.CardEntityListener;
 
 import java.math.BigDecimal;
@@ -81,6 +82,7 @@ public class Card {
      */
     @JsonIgnore
     @NotNull
+    @BatchSize(size = 50)
     @OneToMany(mappedBy = "fromCard")
     private List<Transaction> outgoingTransactions = new ArrayList<>();
 
@@ -90,6 +92,7 @@ public class Card {
      */
     @JsonIgnore
     @NotNull
+    @BatchSize(size = 50)
     @OneToMany(mappedBy = "toCard")
     private List<Transaction> incomingTransactions = new ArrayList<>();
 

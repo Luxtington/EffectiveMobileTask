@@ -27,6 +27,12 @@ import java.util.*;
 @Setter
 @Getter
 @NoArgsConstructor
+@NamedEntityGraph(
+        name = "user_with_all_cards",
+        attributeNodes = {
+                @NamedAttributeNode("cards")
+        }
+)
 @Table(name = "\"user\"")
 public class User {
     /**

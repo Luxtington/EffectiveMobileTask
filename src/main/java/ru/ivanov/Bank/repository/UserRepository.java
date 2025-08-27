@@ -3,6 +3,7 @@ package ru.ivanov.Bank.repository;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,8 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+    @Query("select u from User u")
+    @EntityGraph("user_with_all_cards")
     Page<User> findAll(@Nullable Pageable pageable);
     Optional<User> findByUsername(String username);
 
